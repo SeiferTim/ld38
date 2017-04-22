@@ -1,5 +1,6 @@
 package;
 
+import com.chargedweb.utils.MatrixUtil;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flixel.FlxCamera.FlxCameraFollowStyle;
@@ -30,7 +31,8 @@ class PlayState extends FlxState
 		Data.loadEnvironments();
 		
 		map = new BitmapData(40, 40, false, 0xff000000);
-		map.perlinNoise(40, 40, 5,  Math.floor(Math.random() * 10), true, false, BitmapDataChannel.RED | BitmapDataChannel.BLUE | BitmapDataChannel.GREEN, false);
+		map.perlinNoise(40, 40, 5,FlxG.random.int(), false, false, BitmapDataChannel.RED | BitmapDataChannel.BLUE | BitmapDataChannel.GREEN, false);
+		map.applyFilter(map, map.rect, new Point(), MatrixUtil.setContrast((FlxG.random.int(0,5)*10)));
 		
 		FlxG.bitmapLog.add(map);
 		
@@ -58,6 +60,8 @@ class PlayState extends FlxState
 				
 			}
 		}
+		
+		FlxG.bitmapLog.add(map);
 		
 		bigMap = new FlxTilemap();
 		bigMap.loadMapFromArray(mapData, 40, 40, AssetPaths.biomes__png, 24, 24,FlxTilemapAutoTiling.OFF,0,0,0);

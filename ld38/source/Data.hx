@@ -45,25 +45,25 @@ class Data
 	{
 		var search:String="";
 		
-		if (Temp > .75)
+		if (Temp > .66)
 			search = "1";
-		else if (Temp >= .25 && Temp <= .75)
+		else if (Temp >= .33 && Temp <= .66)
 			search = "0";
-		else if (Temp >= 0 && Temp < .25)
+		else if (Temp >= 0 && Temp < .33)
 			search = "-1";
 		
-		if (Water > .75)
+		if (Water > .66)
 			search += "1";
-		else if (Water >= .25 && Water <= .75)
+		else if (Water >= .33 && Water <= .66)
 			search += "0";
-		else if (Water >= 0 && Water < .25)
+		else if (Water >= 0 && Water < .33)
 			search += "-1";
 		
-		if (Veg > .75)
+		if (Veg > .66)
 			search += "1";
-		else if (Veg >= .25 && Veg <= .75)
+		else if (Veg >= .33 && Veg <= .66)
 			search += "0";
-		else if (Veg >= 0 && Veg < .25)
+		else if (Veg >= 0 && Veg < .33)
 			search += "-1";
 			
 		return Environments.get(search);
