@@ -38,13 +38,19 @@ class Biome
 			var wDiff:Float = Math.abs(water - species.water);
 			var vDiff:Float = Math.abs(veg - species.veg);
 			
-			var av:Float = (.25 - ((tDiff + wDiff + vDiff) / 3)) * .25;
-			//trace(tDiff, wDiff, vDiff, av);
-			//trace(av);
+			var av:Float = (tDiff + wDiff + vDiff) / 3;
+			if (av <= .25)
+				population += 0.025;
+			else if (av <= .5)
+				population -= 0.025;
+			else if (av <= .75)
+				population -= 0.05;
+			else
+				population -= 0.1;
 			
-			population = Math.min(1, population + av);
+			if (population > 1)
+				population = .1;
 			
-			//trace(population);
 			
 			if (population < .1)
 			{

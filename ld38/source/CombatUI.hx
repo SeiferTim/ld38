@@ -47,9 +47,13 @@ class CombatUI extends FlxSubState
 		super();
 		
 		returnCallback = Callback;
-		FlxG.bitmapLog.add(RaceA.portrait.pixels);
-		FlxG.bitmapLog.add(RaceB.portrait.pixels);
 		
+		if (RaceA.name == "")
+			RaceA.makeNameAndPortrait();
+			
+		if (RaceB.name == "")
+			RaceB.makeNameAndPortrait();
+			
 		races = [RaceA, RaceB];
 		pops = [PopA, PopB];
 		

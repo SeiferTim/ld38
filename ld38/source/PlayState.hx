@@ -39,7 +39,9 @@ class PlayState extends FlxState
 	
 	override public function create():Void
 	{
+		FlxG.autoPause = false;
 		race = new Species();
+		race.makeNameAndPortrait();
 		
 		Data.loadEnvironments();
 		
@@ -360,6 +362,7 @@ class PlayState extends FlxState
 				}
 			}
 			
+			
 		}
 		if (!isFirst)
 		{
@@ -369,6 +372,7 @@ class PlayState extends FlxState
 	
 	public function updateMaps():Void
 	{
+		var anyOwned:Bool = false;
 		var b:Biome;
 		for (y in 0...40)
 		{
@@ -380,6 +384,7 @@ class PlayState extends FlxState
 				{
 					if (b.owned)
 					{
+						anyOwned = true;
 						fogData[(y * 40) + x] = Std.int((b.population * 10) + 1);
 					}
 					else
@@ -393,6 +398,12 @@ class PlayState extends FlxState
 				}
 				fog.setTile(x, y, fogData[(y * 40) + x]);
 			}
+		}
+		if (!anyOwned)
+		{
+			FlxG.camera.flash(FlxColor.BLACK,.2,function() {
+				openSubState(new GameOver());
+			});
 		}
 	}
 }

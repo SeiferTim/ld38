@@ -31,6 +31,12 @@ class Species
 		water = FlxG.random.float(0, 1);
 		veg = FlxG.random.float(0, 1);
 
+	}
+	
+	
+	public function makeNameAndPortrait():Void
+	{
+		
 		var raceNo:Int = FlxG.random.int(0, 8);
 		var back:FlxSprite = new FlxSprite();
 		back.loadGraphic(AssetPaths.race_backs__png, true, 24, 24);
@@ -51,10 +57,6 @@ class Species
 		var cAlt:FlxColor = FlxColor.fromHSB(h, .5, .5, 1);
 
 		back.framePixels.threshold(back.framePixels, back.framePixels.rect, new Point(), "==", 0xFFFF0000, c);
-
-	/*	FlxG.bitmapLog.add(back.framePixels);
-		FlxG.bitmapLog.add(fore.framePixels);
-*/
 
 		var gen:NameGenerator = new NameGenerator([
 					"aardvark", "aardwolf", "albatross", "alligator", "alpaca", "anaconda", "angelfish", "anglerfish", "ant", "anteater", "antelope", "antlion", "ape", "aphid", "armadillo", "asp", "ass", "baboon",
@@ -87,8 +89,9 @@ class Species
 				], 2, 0.001);
 				
 		name = null;
+		
 		while (name == null)
-			name = gen.generateName(5, 16);
+			name = gen.generateName(5, 10, "", "", "", "");
 		var firstChar:String = name.substr(0, 1); 
 		var restOfString:String = name.substr(1, name.length); 
     
