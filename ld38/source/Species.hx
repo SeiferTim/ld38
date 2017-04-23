@@ -13,7 +13,6 @@ class Species
 
 	public var portrait:FlxSprite;
 	public var color:FlxColor;
-	public var level:Int = 0;
 	public var attack:Float = 0;
 	public var defense:Float = 0;
 	public var dexterity:Float = 0;
@@ -32,7 +31,7 @@ class Species
 		water = FlxG.random.float(0, 1);
 		veg = FlxG.random.float(0, 1);
 
-		var raceNo:Int = FlxG.random.int(0, 3);
+		var raceNo:Int = FlxG.random.int(0, 8);
 		var back:FlxSprite = new FlxSprite();
 		back.loadGraphic(AssetPaths.race_backs__png, true, 24, 24);
 		back.animation.frameIndex = raceNo;
@@ -53,16 +52,9 @@ class Species
 
 		back.framePixels.threshold(back.framePixels, back.framePixels.rect, new Point(), "==", 0xFFFF0000, c);
 
-		FlxG.bitmapLog.add(back.framePixels);
+	/*	FlxG.bitmapLog.add(back.framePixels);
 		FlxG.bitmapLog.add(fore.framePixels);
-
-		portrait = new FlxSprite();
-		portrait.makeGraphic(26, 26, FlxColor.WHITE);
-		portrait.drawRect(1, 1, 24, 24, cAlt);
-		portrait.stamp(back, 1, 1);
-		portrait.stamp(fore, 1, 1);
-
-		portrait.dirty = true;
+*/
 
 		var gen:NameGenerator = new NameGenerator([
 					"aardvark", "aardwolf", "albatross", "alligator", "alpaca", "anaconda", "angelfish", "anglerfish", "ant", "anteater", "antelope", "antlion", "ape", "aphid", "armadillo", "asp", "ass", "baboon",
@@ -100,7 +92,17 @@ class Species
 		var firstChar:String = name.substr(0, 1); 
 		var restOfString:String = name.substr(1, name.length); 
     
-		name = firstChar.toUpperCase()+restOfString.toLowerCase(); 
+		name = firstChar.toUpperCase() + restOfString.toLowerCase();
+		
+		
+		portrait = new FlxSprite( );
+		portrait.makeGraphic(26, 26, FlxColor.WHITE ,true, name);
+		portrait.drawRect(1, 1, 24, 24, cAlt);
+		portrait.stamp(back, 1, 1);
+		portrait.stamp(fore, 1, 1);
+		
+
+		portrait.dirty = true;
 	}
 
 }

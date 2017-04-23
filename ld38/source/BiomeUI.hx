@@ -13,7 +13,7 @@ class BiomeUI extends FlxGroup
 {
 	public var x(default, set):Float;
 	public var y(default, set):Float;
-	private var background:FlxSprite;
+	public var background:FlxSprite;
 	private var icons:Array<FlxSprite>;
 	private var iconsOffsets:Array<FlxPoint>;
 	private var bars:Array<FlxSprite>;
@@ -239,6 +239,7 @@ class BiomeUI extends FlxGroup
 				if (FlxG.mouse.justReleased)
 				{
 					parent.migrateTo = Std.string(picked.x) + "-" + Std.string(picked.y);
+					parent.migrate();
 					FlxG.mouse.reset();
 				}
 			}

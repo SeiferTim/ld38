@@ -79,7 +79,7 @@ class PlayState extends FlxState
 				}
 				else
 				{
-					if (FlxG.random.bool(25))
+					if (FlxG.random.bool(30))
 					{
 						b.population =  FlxMath.bound( Math.abs(FlxG.random.floatNormal(0, 0.333)), 0, 1);
 						if (b.population >= .1)
@@ -176,7 +176,7 @@ class PlayState extends FlxState
 			}
 			else
 			{
-				dest.y = dest.y + Std.int((biomeUI.y - dest.y) / 2); 
+				dest.y = dest.y + Std.int(((biomeUI.y + biomeUI.background.height) - dest.y) / 2);
 			}
 		}
 		
@@ -234,6 +234,88 @@ class PlayState extends FlxState
 		outIcon.visible = false;
 	}
 	
+	public function migrate():Void
+	{
+		biomeUI.hide();
+		var b1:Biome = biomes.get(migrateFrom);
+		var b2:Biome = biomes.get(migrateTo);
+		var p1:Float;
+		var p2:Float;
+		if (b2.owned)
+		{
+			p1 = b1.population / 2;
+			p2 = b2.population;
+			if (p2 + p1 > 1)
+			{
+				p1 = 1 - p2;
+			}
+			b2.population += p1;
+			b1.population -= p1;
+			revealSeen(b2.x, b2.y);
+			popCycle();
+		}
+		else if (b2.population >= .1)
+		{
+			openSubState(new CombatUI(b1.species, b2.species, b1.population / 2, b2.population, returnFromCombat));
+		}
+		else
+		{
+			p1 = b1.population / 2;
+			b1.population -= p1;
+			b2.population = p1;
+			b2.species = race;
+			b2.owned = true;
+			revealSeen(b2.x, b2.y);
+			popCycle();
+		}
+		
+	}
+	
+	public function revealSeen(X:Int, Y:Int):Void
+	{
+		var b3:Biome;
+		if (X - 1 >= 0)
+		{
+			b3 = biomes.get(Std.string(X - 1) + "-" + Std.string(Y));
+			b3.seen = true;
+		}
+		if (X + 1 < 40)
+		{
+			b3 = biomes.get(Std.string(X + 1) + "-" + Std.string(Y));
+			b3.seen = true;
+		}
+		if (Y - 1 >= 0)
+		{
+			b3 = biomes.get(Std.string(X) + "-" + Std.string(Y-1));
+			b3.seen = true;
+		}
+		if (Y + 1 < 40)
+		{
+			b3 = biomes.get(Std.string(X) + "-" + Std.string(Y+1));
+			b3.seen = true;
+		}
+	}
+	
+	public function returnFromCombat(Winner:Int, EndPopW:Float, EndPopL:Float):Void
+	{
+		var b1:Biome = biomes.get(migrateFrom);
+		var b2:Biome = biomes.get(migrateTo);
+		
+		if (Winner == 0)
+		{
+			b1.population -= (b1.population / 2);
+			b2.owned = true;
+			b2.species = race;
+			b2.population = EndPopW;
+			revealSeen(b2.x, b2.y);
+		}
+		else
+		{
+			b1.population -= (b1.population / 2);
+			b2.population = EndPopL;
+		}
+		popCycle();
+	}
 
 	override public function update(elapsed:Float):Void
 	{
@@ -262,6 +344,8 @@ class PlayState extends FlxState
 	
 	public function popCycle(?isFirst:Bool = false):Void
 	{
+		migrateFrom = migrateTo = "";
+		outIcon.visible = false;
 		for (b in biomes)
 		{
 			if (!(isFirst && b.owned))
@@ -269,7 +353,45 @@ class PlayState extends FlxState
 				if (b.population > 0)
 				{
 					b.updatePop();
+					if (b.owned && b.population == 0)
+					{
+						b.owned = false;
+					}
 				}
+			}
+			
+		}
+		if (!isFirst)
+		{
+			updateMaps();
+		}
+	}
+	
+	public function updateMaps():Void
+	{
+		var b:Biome;
+		for (y in 0...40)
+		{
+			for (x in 0...40)
+			{
+				b = biomes.get(Std.string(x) + "-" + Std.string(y));
+				
+				if (b.seen)
+				{
+					if (b.owned)
+					{
+						fogData[(y * 40) + x] = Std.int((b.population * 10) + 1);
+					}
+					else
+					{
+						fogData[(y * 40) + x] = 1;
+					}
+				}
+				else
+				{
+					fogData[(y * 40) + x] = 0;
+				}
+				fog.setTile(x, y, fogData[(y * 40) + x]);
 			}
 		}
 	}
